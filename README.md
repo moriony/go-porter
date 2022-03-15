@@ -1,6 +1,6 @@
 # Porter
 
-Воркер для конкурентого выполнения работ с общим состоянием
+Concurrent tasks execution with a shared state
 
 ## Examples
 
