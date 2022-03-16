@@ -12,17 +12,17 @@ func main() {
 		func(state porter.State) error {
 			fmt.Println("started", porter.JobIDFromState(state))
 
-			// эмулируем долгое выполнение задачи
+			// emulate a long task execution
 			<-time.After(200 * time.Millisecond)
 
-			// промежуточная проверка, не закрылся ли контекст
+			// intermediate check if the context has closed
 			select {
 			default:
 			case <-state.Context().Done():
 				return state.Context().Err()
 			}
 
-			// никогда не вызовется, т.к. функция выполняется дольше разрешенного ttl 100ms
+			// will never be called, because the function runs longer than the allowed ttl 100ms
 			fmt.Println("finished", porter.JobIDFromState(state))
 
 			return nil
@@ -47,7 +47,7 @@ func LoggingMiddleware(next porter.JobFunc) porter.JobFunc {
 	return func(state porter.State) error {
 		err := next(state)
 
-		// несмотря на завершение работы по таймауту, мидлвара все равно выполнится и залогирует результат
+		// despite the completion of work on a timeout, the middleware will still be executed and log the result
 		fmt.Println("job's result", err)
 
 		return err
